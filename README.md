@@ -10,7 +10,7 @@ This was inspired by Apple's introduction of the M1 chip which is ARM based. Tha
 
 ## Image Contents
 
-This image is based on Ubuntu:20.04 and mimics the things that are needed for a valid vagrant box. This contains the `vagrant` userid with password-less `sudo` privlidges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` servver in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfet sense.
+This image is based on Ubuntu:20.04 and mimics the things that are needed for a valid vagrant box. This contains the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` server in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
 
 ## Sample Vagrantfile
 
@@ -34,4 +34,5 @@ If you want to run Docker inside the container uncomment the `docker.create_args
 ```
     docker.create_args = ['--privileged']
 ```
-This will give the container the privaledges needed to run docker inside of it.
+This will give the container the privileges needed to run docker inside of it.
+

@@ -3,8 +3,10 @@ FROM ubuntu:focal
 # Install packages need to support vagrant
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install sudo curl vim-tiny \
-    && apt-get -y --no-install-recommends install openssh-server supervisor man-db rsync \
+    && yes | unminimize \
+    && apt-get -y install sudo curl vim-tiny \
+    && apt-get -y install apt-transport-https ca-certificates software-properties-common \
+    && apt-get -y install openssh-server supervisor man-db rsync \
     && apt-get -qq clean \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir /var/run/sshd

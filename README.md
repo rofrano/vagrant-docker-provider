@@ -10,29 +10,33 @@ This was inspired by Apple's introduction of the M1 chip which is ARM based. Tha
 
 ## Image Contents
 
-This image is based on Ubuntu:20.04 and mimics the things that are needed for a valid vagrant box. This contains the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` server in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
+This image is based on Ubuntu Focal 20.04 and contains  the packages that are needed for a valid vagrant box. This includes the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` server in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
 
-## Sample Vagrantfile
+## Example Vagrantfile
 
-Here is a sample `Vagrantfile` that uses thus image:
+Here is a sample `Vagrantfile` that uses this image:
 
 ```ruby
 Vagrant.configure("2") do |config|
-  config.vm.provider 'docker' do |docker, override|
+  config.vm.provider :docker do |docker, override|
     override.vm.box = nil
     docker.image = "rofrano/vagrant:ubuntu"
     docker.name = "vagrant-docker"
     docker.remains_running = true
     docker.has_ssh = true
-    # docker.create_args = ['--privileged']
+    docker.create_args = ['--privileged']
   end
 end
 ```
 
-If you want to run Docker inside the container uncomment the `docker.create_args` line like this:
+You can omit the `--privileged` flag if you won't be running Docker inside the container but since I use these containers like VMs, I run Docker inside of them.
 
-```
-    docker.create_args = ['--privileged']
-```
-This will give the container the privileges needed to run docker inside of it.
+## Command Line Usage 
 
+To use this provider, add the `--provider` flag to your `vagrant` command:
+
+```sh
+vagrant up --provider=docker
+```
+
+This will use this the docker image specified in your `Vagrantfile` as the base box.

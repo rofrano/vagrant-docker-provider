@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Lets start openssh in background to allow multiple connections
+#  (otherwise sshd -D is handling one connection only)
+# and run a wrapper around to provide the foreground behaviour for docker
+#
+
+#start the daemon
+# for the case somebody is using ssh-agent with many keys we would like to allow 10 login tries
+# and disable reverse DNS lookup for speed optimization
+/usr/sbin/sshd -o MaxAuthTries=10 -o UseDNS=no
+
+#signal handler, clean termination
+trap "kill `cat /var/run/sshd.pid`; exit 0" TERM INT QUIT HUP
+
+#wait for termination or crash
+cnt=1
+while [ $cnt -eq 1 ]; do
+  cnt=$(ps -ax | grep `cat /var/run/sshd.pid` | grep -v grep | wc -l)
+  sleep 2
+done
+#some crash or similar thing
+exit 1

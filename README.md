@@ -40,3 +40,25 @@ vagrant up --provider=docker
 ```
 
 This will use this the docker image specified in your `Vagrantfile` as the base box.
+
+## Build Image
+
+To build this image you must use `buildx` and build it for multiple architectures so that it can run on both Intel and ARM machines.
+
+If you don't have a builder you must first create one:
+
+```sh
+% export DOCKER_BUILDKIT=1
+% docker buildx create --use --name=qemu
+qemu
+% docker buildx inspect --bootstrap
+```
+
+Then you can build the multi-platform image like this:
+
+```sh
+docker buildx build -t rofrano/vagrant:ubuntu --platform=linux/amd64,linux/arm64 --push .
+```
+
+This will use QEMU to build a multi-platform image and push it to docker hub.
+

@@ -2,15 +2,17 @@
 
 This repo will build a docker image that can be used as a provider for [Vagrant](https://www.vagrantup.com) as a development environment.
 
+The ready made Docker Hub image can be found here: [rofrano/vagrant:ubuntu](https://hub.docker.com/repository/docker/rofrano/vagrant)
+
 ## Why Vagrant with Docker?
 
 This was inspired by Apple's introduction of the M1 chip which is ARM based. That means that solutions which use Vagrant and VirtualBox will not work on Apple M1 because VirtualBox requires an Intel processors. This lead me to find a solution for a virtual development environment that works with ARM and thus Apple M1 computers.
 
-[Docker](https://www.docker.com) has introduced the [Apple M1 Tech Preview](https://docs.docker.com/docker-for-mac/apple-m1/) that runs Docker on Macs that have the Apple M1 chip. By using Docker as a provisioner for Vagrant, we can simulate the same experience as developers using Vagrant with VirtualBox.
+[Docker](https://www.docker.com) has introduced the [Apple M1 Tech Preview](https://docs.docker.com/docker-for-mac/apple-m1/) that runs Docker on Macs that have the Apple M1 chip. By using Docker as a provisioner for Vagrant, we can simulate the same experience as developers using Vagrant with VirtualBox. This is one case where you actually do want a Docker container to behave like a VM.
 
 ## Image Contents
 
-This image is based on Ubuntu Focal 20.04 and contains  the packages that are needed for a valid vagrant box. This includes the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` server in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
+This image is based on Ubuntu Focal 20.04 and contains  the packages that are needed for a valid vagrant box. This includes the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` daemon in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
 
 ## Example Vagrantfile
 
@@ -18,18 +20,20 @@ Here is a sample `Vagrantfile` that uses this image:
 
 ```ruby
 Vagrant.configure("2") do |config|
+  config.vm.hostname = "ubuntu"
+
   config.vm.provider :docker do |docker, override|
     override.vm.box = nil
     docker.image = "rofrano/vagrant:ubuntu"
-    docker.name = "vagrant-docker"
     docker.remains_running = true
     docker.has_ssh = true
-    docker.create_args = ['--privileged']
+    docker.privileged = true
+    #docker.create_args = ['--platform=linux/arm64']
   end
 end
 ```
 
-You can omit the `--privileged` flag if you won't be running Docker inside the container but since I use these containers like VMs, I run Docker inside of them.
+You can omit the `docker.privileged` flag if you won't be running Docker inside the container but since I use these containers like VMs, I run Docker inside of them. If you want to test the ARM version on an Intel computer just uncomment the `docker.create_args` line which adds `--platform=linux/arm64` to the `docker run` command to force the `aarch64` image to be used. 
 
 ## Command Line Usage 
 
@@ -41,7 +45,7 @@ vagrant up --provider=docker
 
 This will use this the docker image specified in your `Vagrantfile` as the base box.
 
-## Build Image
+## Build Multi-Archtecture Image
 
 To build this image you must use `buildx` and build it for multiple architectures so that it can run on both Intel and ARM machines.
 

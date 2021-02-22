@@ -13,15 +13,16 @@ RUN sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d
 RUN apt-get update \
     && yes | unminimize \
     && apt-get -y install \
-    openssh-server \
-    supervisor \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
-    rsync \
-    sudo \
-    curl \
-    vim-tiny \
+       openssh-server \
+       supervisor \
+       apt-transport-https \
+       ca-certificates \
+       software-properties-common \
+       rsync \
+       man-db \
+       sudo \
+       curl \
+       vim-tiny \
     && apt-get -qq clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

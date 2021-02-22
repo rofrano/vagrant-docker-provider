@@ -1,8 +1,8 @@
-# vagrant-docker-image
+# vagrant-docker-provider
 
 This repo will build a docker image that can be used as a provider for [Vagrant](https://www.vagrantup.com) as a development environment.
 
-The ready made Docker Hub image can be found here: [rofrano/vagrant:ubuntu](https://hub.docker.com/repository/docker/rofrano/vagrant)
+The ready made Docker Hub image can be found here: [rofrano/vagrant-provider:ubuntu](https://hub.docker.com/repository/docker/rofrano/vagrant-provider)
 
 ## Why Vagrant with Docker?
 
@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provider :docker do |docker, override|
     override.vm.box = nil
-    docker.image = "rofrano/vagrant:ubuntu"
+    docker.image = "rofrano/vagrant-provider:ubuntu"
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
@@ -33,7 +33,7 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-You can omit the `docker.privileged` flag if you won't be running Docker inside the container but since I use these containers like VMs, I run Docker inside of them. If you want to test the ARM version on an Intel computer just uncomment the `docker.create_args` line which adds `--platform=linux/arm64` to the `docker run` command to force the `aarch64` image to be used. 
+You can omit the `docker.privileged` flag if you won't be running services like Docker inside the container but since I use these containers like VMs, I run Docker inside of them. If you want to test the ARM version on an Intel computer just uncomment the `docker.create_args` line which adds `--platform=linux/arm64` to the `docker run` command to force the `aarch64` image to be used via `qemu`. 
 
 ## Command Line Usage 
 

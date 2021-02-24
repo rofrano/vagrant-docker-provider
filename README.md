@@ -68,4 +68,4 @@ This will use QEMU to build a multi-platform image and push it to docker hub.
 
 ## Credits
 
-A huge thanks to [Matthew Warman](http://warman.io) who provided the Docker image `mcwarman/vagrant-provider` as the bases for my `Dockerfile` using `systemd`. He added all the magic to make it work.
+A huge thanks to [Matthew Warman](http://warman.io) who provided the `Dockerfile` from [mcwarman/vagrant-provider](https://github.com/mcwarman/vagrant-docker-provider) as the bases for my `Dockerfile` using `systemd`. He added all the magic to make it work and I am very greateful for his generosity.

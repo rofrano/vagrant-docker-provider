@@ -1,6 +1,6 @@
 # vagrant-docker-provider
 
-This repo will build a docker image that can be used as a provider for [Vagrant](https://www.vagrantup.com) as a development environment.
+This repo will build a docker image that can be used as a provider for [Vagrant](https://www.vagrantup.com) as a Linux development environment.
 
 The ready made Docker Hub image can be found here: [rofrano/vagrant-provider:ubuntu](https://hub.docker.com/repository/docker/rofrano/vagrant-provider)
 
@@ -28,12 +28,12 @@ Vagrant.configure("2") do |config|
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
-    #docker.create_args = ['--platform=linux/arm64']
-  end
+    docker.create_args = ["-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro"]
+  end  
 end
 ```
 
-You can omit the `docker.privileged` flag if you won't be running services like Docker inside the container but since I use these containers like VMs, I run Docker inside of them. If you want to test the ARM version on an Intel computer just uncomment the `docker.create_args` line which adds `--platform=linux/arm64` to the `docker run` command to force the `aarch64` image to be used via `qemu`. 
+If you want to test the ARM version on an Intel computer just add `--platform=linux/arm64` to the `docker.create_args` line. This will add the `--platform` flag to the `docker run` command to force the `aarch64` image to be used via `qemu`. 
 
 ## Command Line Usage 
 
@@ -61,8 +61,11 @@ qemu
 Then you can build the multi-platform image like this:
 
 ```sh
-docker buildx build -t rofrano/vagrant:ubuntu --platform=linux/amd64,linux/arm64 --push .
+docker buildx build -t rofrano/vagrant-provider:ubuntu --platform=linux/amd64,linux/arm64 --push .
 ```
 
 This will use QEMU to build a multi-platform image and push it to docker hub.
 
+## Credits
+
+A huge thanks to [Matthew Warman](http://warman.io) who provided the Docker image `mcwarman/vagrant-provider` as the bases for my `Dockerfile` using `systemd`. He added all the magic to make it work.

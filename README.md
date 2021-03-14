@@ -61,7 +61,7 @@ qemu
 Then you can build the multi-platform image like this:
 
 ```sh
-docker buildx build -t rofrano/vagrant-provider:ubuntu --platform=linux/amd64,linux/arm64 --push .
+docker buildx build --tag rofrano/vagrant-provider:ubuntu --platform=linux/amd64,linux/arm64 --push .
 ```
 
 This will use QEMU to build a multi-platform image and push it to docker hub.

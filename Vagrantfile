@@ -13,9 +13,15 @@ Vagrant.configure(2) do |config|
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
-    docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:ro"]
+    docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:rw"]
+    docker.create_args = ["--cgroupns=host"]
     # Uncomment to force arm64 for testing images on Intel
     # docker.create_args = ["--platform=linux/arm64"]     
   end  
+
+  # Install Docker and pull an image
+  # config.vm.provision :docker do |d|
+  #   d.pull_images "alpine:latest"
+  # end
 
 end

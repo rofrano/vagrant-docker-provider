@@ -1,6 +1,6 @@
 # Build with:
 # docker buildx build --platform linux/amd64,linux/arm64 --push --tag rofrano/vagrant-provider:debian .
-FROM debian:buster
+FROM debian:11
 LABEL MAINTAINER="John Rofrano <rofrano@gmail.com>"
 
 ENV DEBIAN_FRONTEND noninteractive

@@ -16,7 +16,7 @@ Vagrant.configure(2) do |config|
     docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:rw"]
     docker.create_args = ["--cgroupns=host"]
     # Uncomment to force arm64 for testing images on Intel
-    # docker.create_args = ["--platform=linux/arm64"]     
+    # docker.create_args = ["--platform=linux/arm64", "--cgroupns=host"]     
   end  
 
   # Install Docker and pull an image

@@ -6,13 +6,15 @@ The ready made Docker Hub image can be found here: [rofrano/vagrant-provider:ubu
 
 ## Why Vagrant with Docker?
 
-This was inspired by Apple's introduction of the M1 Silicon chip which is ARM based. That means that solutions which use Vagrant and VirtualBox will not work on Apple M1 Silicon because VirtualBox requires an Intel processors. This lead me to find a solution for a virtual development environment that works with ARM and thus Apple M1 computers.
+ This was inspired by Apple's introduction of the M1 chip which is ARM based. That means that solutions which use Vagrant and VirtualBox will not work on Apple M1 because VirtualBox requires an Intel processors. This lead me to find a solution for a virtual development environment that works with ARM and thus Apple M1 computers. You can find out more information about why I built it here:
+
+[Developing on Apple M1 Silicon with Virtual Environments](https://johnrofrano.medium.com/developing-on-apple-m1-silicon-with-virtual-environments-4f5f0765fd2f)
 
 [Docker](https://www.docker.com) has introduced [Docker Desktop for Apple silicon](https://docs.docker.com/docker-for-mac/apple-silicon/) that runs Docker on Macs that have the Apple M1 chip. By using Docker as a provisioner for Vagrant, we can simulate the same experience as developers using Vagrant with VirtualBox. This is one case where you actually do want a Docker container to behave like a VM.
 
 ## Image Contents
 
-This image is based on Ubuntu Focal 20.04 and contains  the packages that are needed for a valid vagrant box. This includes the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` daemon in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment for vagrant to `ssh` into, so it makes perfect sense. ;-)
+The `ubuntu` image is based on Ubuntu 21.04 and the `debian` image is Debian 11. Both contain the packages that are needed for a valid vagrant box. This includes the `vagrant` userid with password-less `sudo` privileges. It also contains as `sshd` server. Normally, it is considered a bad idea to run an `ssh` daemon in a Docker container but in this case, the Docker container is emulating a Virtual Machine (VM) to provide a development environment so it makes perfect sense. ;-)
 
 ## Example Vagrantfile
 
@@ -28,16 +30,32 @@ Vagrant.configure("2") do |config|
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
-    docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:ro"]
+    docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:rw"]
+    docker.create_args = ["--cgroupns=host"]
     # Uncomment to force arm64 for testing images on Intel
-    # docker.create_args = ["--platform=linux/arm64"] 
+    # docker.create_args = ["--platform=linux/arm64"]     
   end  
 end
 ```
 
+### Example: Docker in Docker
+
+This image will also run docker in docker. To install docker using vagrant add this to the `Vagrantfile`:
+
+```ruby
+  # Install Docker and pull an image
+  config.vm.provision :docker do |d|
+    d.pull_images "alpine:latest"
+  end
+```
+
+This will install Docker and pull the `alpine:latest` image. You can pull and run any image you'd like.
+
+### Example: ARM64
+
 If you want to test the ARM version on an Intel computer just uncomment the `docker.create_args` line which adds `--platform=linux/arm64` to the arguments. This will add the `--platform` flag to the `docker run` command to force the `aarch64` image to be used via `qemu`.
 
-There is also a `debian` variant to this image that is based on `debian:buster`. That can be used by changing the `docker.image` line above to use the `rofrano/vagrant-provider:debian` image instead like this:
+There is also a `debian` variant to this image that is based on `debian:11`. That can be used by changing the `docker.image` line above to use the `rofrano/vagrant-provider:debian` image instead like this:
 
 ```ruby
     docker.image = "rofrano/vagrant-provider:debian"

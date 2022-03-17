@@ -1,4 +1,4 @@
-FROM ubuntu:21.04
+FROM ubuntu:jammy
 LABEL MAINTAINER="John Rofrano <rofrano@gmail.com>"
 
 ENV DEBIAN_FRONTEND noninteractive

@@ -1,4 +1,7 @@
-# vagrant-docker-provider
+# Vagrant Docker Provider Image
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Docker Pulls](https://img.shields.io/docker/pulls/rofrano/vagrant-provider?logo=docker&label=docker%20pulls%20%2F%20vagrant-provider)](https://hub.docker.com/repository/docker/rofrano/vagrant-provider)
 
 This repo will build a docker image that can be used as a provider for [Vagrant](https://www.vagrantup.com) as a Linux development environment.
 
